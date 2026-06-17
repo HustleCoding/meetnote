@@ -81,6 +81,34 @@ BlackHole. Open **Audio MIDI Setup** (`/Applications/Utilities`) and create:
 Then grant **Microphone** permission (and **Screen & System Audio Recording** if
 prompted) to your terminal / Python under **System Settings → Privacy & Security**.
 
+### Optional: auto output-switching
+
+For meetnote to capture the other participants, your Mac's **output** has to be
+a Multi-Output Device that includes BlackHole. Instead of switching that by hand
+before every call, enable auto-switching:
+
+```toml
+# ~/.config/meetnote/config.toml
+auto_switch_output = true
+multi_output_device_name = "Multi-Output Device"   # your speakers + BlackHole
+```
+
+meetnote then flips your output to that device when recording starts and
+restores your previous output when it stops (via `SwitchAudioSource`, installed
+by `install.sh`).
+
+**On AirPods/headphones?** Any headphones used as output bypass BlackHole unless
+they're in a Multi-Output Device too. Create a second Multi-Output Device
+(**your AirPods + BlackHole 2ch**) and point meetnote at it:
+
+```toml
+multi_output_device_airpods = "AirPods + BlackHole"   # name it whatever you like
+```
+
+meetnote detects when your current output looks like AirPods and switches to
+that device instead. If no suitable device exists it warns you and records
+without switching (rather than silently capturing no audio).
+
 ### Verify
 
 ```bash
@@ -144,6 +172,9 @@ it). See [`config.example.toml`](config.example.toml) for all options. Common on
 | `whisper_model` | `base.en` | `tiny.en`→`large-v3`; bigger = better/slower |
 | `ollama_model` | `llama3.1:8b` | any model you've `ollama pull`-ed |
 | `audio_device_name` | `Meetnote Aggregate` | your aggregate input device |
+| `auto_switch_output` | `false` | auto-route output through BlackHole while recording |
+| `multi_output_device_name` | `Multi-Output Device` | speakers + BlackHole device to switch to |
+| `multi_output_device_airpods` | `""` | AirPods + BlackHole device, used when on AirPods |
 | `detect_apps` | Zoom/Teams/Webex/Slack/… | substring match on process names |
 | `min_recording_seconds` | `20` | shorter recordings are discarded |
 | `notify` | `true` | show a notification when recording starts/stops |

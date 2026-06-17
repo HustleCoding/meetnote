@@ -57,29 +57,32 @@ def cmd_doctor(args: argparse.Namespace, config: Config) -> int:
 
 
 def cmd_record(args: argparse.Namespace, config: Config) -> int:
+    from .audioswitch import OutputSwitch
+
     recorder = Recorder(config)
-    try:
-        path = recorder.start(label=args.name)
-    except RecorderError as exc:
-        print(f"error: {exc}", file=sys.stderr)
-        return 1
-
-    print(f"Recording to {path}")
-    print("Press Ctrl+C to stop.")
-
-    stop_requested = {"value": False}
-
-    def _handler(signum, frame):  # noqa: ARG001
-        stop_requested["value"] = True
-
-    signal.signal(signal.SIGINT, _handler)
     elapsed = 0.0
-    try:
-        while not stop_requested["value"] and recorder.is_recording:
-            time.sleep(0.25)
-    finally:
-        elapsed = recorder.elapsed_seconds()
-        path = recorder.stop()
+    with OutputSwitch(config):
+        try:
+            path = recorder.start(label=args.name)
+        except RecorderError as exc:
+            print(f"error: {exc}", file=sys.stderr)
+            return 1
+
+        print(f"Recording to {path}")
+        print("Press Ctrl+C to stop.")
+
+        stop_requested = {"value": False}
+
+        def _handler(signum, frame):  # noqa: ARG001
+            stop_requested["value"] = True
+
+        signal.signal(signal.SIGINT, _handler)
+        try:
+            while not stop_requested["value"] and recorder.is_recording:
+                time.sleep(0.25)
+        finally:
+            elapsed = recorder.elapsed_seconds()
+            path = recorder.stop()
 
     if path is None:
         print("Nothing was recorded.")

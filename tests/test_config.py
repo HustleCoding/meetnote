@@ -37,6 +37,26 @@ def test_unknown_keys_are_ignored(tmp_path):
     assert not hasattr(cfg, "bogus_key")
 
 
+def test_auto_switch_defaults_off():
+    cfg = Config()
+    assert cfg.auto_switch_output is False
+    assert cfg.multi_output_device_name == "Multi-Output Device"
+    assert cfg.multi_output_device_airpods == ""
+
+
+def test_load_auto_switch_overrides(tmp_path):
+    path = tmp_path / "config.toml"
+    path.write_text(
+        "auto_switch_output = true\n"
+        'multi_output_device_name = "Speakers + BlackHole"\n'
+        'multi_output_device_airpods = "AirPods + BlackHole"\n'
+    )
+    cfg = load_config(path)
+    assert cfg.auto_switch_output is True
+    assert cfg.multi_output_device_name == "Speakers + BlackHole"
+    assert cfg.multi_output_device_airpods == "AirPods + BlackHole"
+
+
 def test_write_default_config_roundtrips(tmp_path):
     path = tmp_path / "config.toml"
     write_default_config(path)
