@@ -1,0 +1,27 @@
+# Copy this to ~/.config/meetnote/config.toml (or run `meetnote init`).
+# Every value is optional; delete a line to use the built-in default.
+
+# Where recordings, transcripts and summaries are saved.
+recordings_dir = "~/Recordings/Meetnote"
+
+# faster-whisper transcription model. Bigger = more accurate but slower.
+# Options: tiny.en, base.en, small.en, small, medium, large-v3
+whisper_model = "base.en"
+whisper_compute_type = "int8"
+# whisper_language = "en"
+
+# Local Ollama model used to summarize transcripts.
+ollama_model = "llama3.1:8b"
+ollama_host = "http://localhost:11434"
+
+# avfoundation Aggregate Device that mixes your mic + BlackHole (see README).
+audio_device_name = "Meetnote Aggregate"
+
+# Apps whose presence triggers auto-recording (substring, case-insensitive).
+detect_apps = ["zoom.us", "Microsoft Teams", "Webex", "Slack", "FaceTime", "Discord"]
+poll_interval_seconds = 5.0
+min_recording_seconds = 20.0
+
+auto_transcribe = true
+auto_summarize = true
+notify = true
