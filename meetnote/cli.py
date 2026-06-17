@@ -73,16 +73,18 @@ def cmd_record(args: argparse.Namespace, config: Config) -> int:
         stop_requested["value"] = True
 
     signal.signal(signal.SIGINT, _handler)
+    elapsed = 0.0
     try:
         while not stop_requested["value"] and recorder.is_recording:
             time.sleep(0.25)
     finally:
+        elapsed = recorder.elapsed_seconds()
         path = recorder.stop()
 
     if path is None:
         print("Nothing was recorded.")
         return 1
-    print(f"Saved {path} ({recorder.elapsed_seconds():.0f}s).")
+    print(f"Saved {path} ({elapsed:.0f}s).")
 
     if config.auto_transcribe:
         print("Transcribing and summarizing (this can take a while)...")
