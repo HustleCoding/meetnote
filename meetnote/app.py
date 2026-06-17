@@ -70,6 +70,11 @@ class MeetnoteApp(rumps.App):
             self._output_switch.restore()
             rumps.alert("Meetnote — cannot record", str(exc))
             return
+        except Exception:
+            # Any other failure (e.g. ffmpeg missing, permission error) must not
+            # leave the system output stuck on the Multi-Output Device.
+            self._output_switch.restore()
+            raise
         self._auto_started = auto
         self._set_recording_ui(True)
         self._notify("Meetnote", f"Recording started → {Path(path).name}")
