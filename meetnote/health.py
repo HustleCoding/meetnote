@@ -51,7 +51,7 @@ def check_blackhole() -> Check:
         return Check("BlackHole", False, f"error listing devices: {exc}")
     if any("blackhole" in name.lower() for name in devices.values()):
         return Check("BlackHole", True, "BlackHole virtual device detected")
-    return Check("BlackHole", False, "not found — install with 'brew install blackhole-2ch'")
+    return Check("BlackHole", False, "not found — install with 'brew install --cask blackhole-2ch'")
 
 
 def check_ollama(config: Config) -> Check:

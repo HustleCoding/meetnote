@@ -51,9 +51,18 @@ cd meetnote
 ./install.sh
 ```
 
-`install.sh` installs `ffmpeg`, `blackhole-2ch`, and `ollama`, creates a Python
-virtualenv, installs meetnote, writes a default config, and pulls the default
-Ollama model.
+`install.sh` installs `ffmpeg`, `ollama`, and the BlackHole audio driver
+(`brew install --cask blackhole-2ch`), creates a Python virtualenv, installs
+meetnote, writes a default config, and pulls the default Ollama model.
+
+> **BlackHole is a cask** (a system audio driver) and its install needs your
+> macOS password. If `install.sh` reports it couldn't install BlackHole, run
+> this directly in your terminal and re-run the installer:
+> ```bash
+> brew install --cask blackhole-2ch
+> ```
+> If `BlackHole 2ch` still doesn't show up as an audio device afterwards,
+> restart Core Audio with `sudo killall coreaudiod` (or reboot).
 
 ### One-time audio setup (the important part)
 
@@ -153,6 +162,9 @@ Each meeting produces three files that share a timestamped name:
 
 ## Troubleshooting
 
+- **`BlackHole: not found`** — install the driver with
+  `brew install --cask blackhole-2ch` (it needs your macOS password). If it still
+  doesn't appear, run `sudo killall coreaudiod` or reboot.
 - **`audio device 'Meetnote Aggregate' not found`** — finish the Audio MIDI Setup
   step, or run `meetnote devices` and set `audio_device_name` to a listed device.
 - **Recording is silent / only my voice** — your output isn't going through the
