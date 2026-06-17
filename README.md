@@ -173,6 +173,11 @@ Each meeting produces three files that share a timestamped name:
 - **`Could not reach Ollama`** — start it with `ollama serve` and ensure the model
   is pulled (`ollama pull llama3.1:8b`).
 - **No transcript** — make sure `faster-whisper` installed (`pip install -e .`).
+- **Transcript repeats a word / is gibberish** — usually means the audio was
+  mostly music, noise or silence (Whisper hallucinates on non-speech). For real
+  speech it's accurate; for better accuracy on tougher audio, bump
+  `whisper_model` in your config from `base.en` to `small.en` or `medium.en`
+  (slower, more accurate).
 
 ---
 

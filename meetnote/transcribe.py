@@ -44,10 +44,23 @@ def transcribe(audio_path: Path, config: Config) -> Transcript:
     from faster_whisper import WhisperModel  # lazy import (heavy, optional dep)
 
     model = WhisperModel(config.whisper_model, compute_type=config.whisper_compute_type)
+    # Anti-hallucination settings: meeting audio often has music, silence or
+    # quiet stretches that make Whisper loop on a phrase ("... interesting
+    # interesting interesting"). Disabling condition_on_previous_text stops the
+    # model feeding its own repeats back as context, and the n-gram/repetition
+    # penalties plus VAD trimming further suppress runaway repetition.
     segments_iter, info = model.transcribe(
         str(audio_path),
         language=config.whisper_language,
+        beam_size=5,
         vad_filter=True,
+        vad_parameters={"min_silence_duration_ms": 500},
+        condition_on_previous_text=False,
+        no_repeat_ngram_size=3,
+        repetition_penalty=1.1,
+        compression_ratio_threshold=2.4,
+        log_prob_threshold=-1.0,
+        no_speech_threshold=0.6,
     )
 
     segments: list[TranscriptSegment] = []
