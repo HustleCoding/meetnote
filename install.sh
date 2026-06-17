@@ -18,9 +18,21 @@ if ! command -v brew >/dev/null 2>&1; then
   exit 1
 fi
 
-echo "==> Installing system dependencies (ffmpeg, blackhole-2ch, ollama)"
+echo "==> Installing system dependencies (ffmpeg, ollama)"
 brew install ffmpeg ollama || true
-brew install blackhole-2ch || true
+
+echo "==> Installing BlackHole audio driver (cask)"
+# BlackHole is a cask (a system audio driver) and may prompt for your password.
+if brew list --cask blackhole-2ch >/dev/null 2>&1; then
+  echo "BlackHole 2ch already installed."
+elif ! brew install --cask blackhole-2ch; then
+  echo >&2
+  echo "WARNING: 'brew install --cask blackhole-2ch' failed." >&2
+  echo "It installs an audio driver and needs your macOS password, so run it" >&2
+  echo "directly in your terminal, then re-run this installer:" >&2
+  echo "    brew install --cask blackhole-2ch" >&2
+  echo "(If BlackHole still doesn't appear afterwards: 'sudo killall coreaudiod')" >&2
+fi
 
 echo "==> Creating Python virtual environment (.venv)"
 python3 -m venv .venv
