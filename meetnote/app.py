@@ -12,6 +12,7 @@ from pathlib import Path
 import rumps
 
 from .audio import Recorder, RecorderError
+from .audioswitch import OutputSwitch
 from .config import Config
 from .detect import active_meeting_apps
 from .pipeline import process_recording
@@ -25,6 +26,7 @@ class MeetnoteApp(rumps.App):
         super().__init__("Meetnote", title=IDLE_TITLE, quit_button=None)
         self.config = config
         self.recorder = Recorder(config)
+        self._output_switch = OutputSwitch(config)
         self._auto_started = False  # True if the current recording was auto-triggered
 
         self.record_item = rumps.MenuItem("Start Recording", callback=self.on_toggle_record)
@@ -61,9 +63,11 @@ class MeetnoteApp(rumps.App):
         self.status_item.title = "Recording…" if recording else "Idle"
 
     def _start(self, auto: bool) -> None:
+        self._output_switch.activate()
         try:
             path = self.recorder.start()
         except RecorderError as exc:
+            self._output_switch.restore()
             rumps.alert("Meetnote — cannot record", str(exc))
             return
         self._auto_started = auto
@@ -73,6 +77,7 @@ class MeetnoteApp(rumps.App):
     def _stop_and_process(self) -> None:
         elapsed = self.recorder.elapsed_seconds()
         path = self.recorder.stop()
+        self._output_switch.restore()
         self._auto_started = False
         self._set_recording_ui(False)
         if path is None:
@@ -130,6 +135,7 @@ class MeetnoteApp(rumps.App):
     def on_quit(self, _item) -> None:
         if self.recorder.is_recording:
             self.recorder.stop()
+            self._output_switch.restore()
         rumps.quit_application()
 
 

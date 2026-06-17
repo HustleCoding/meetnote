@@ -53,6 +53,16 @@ class Config:
     # call are captured. Set by name; the index is resolved at runtime.
     audio_device_name: str = "Meetnote Aggregate"
 
+    # Automatically route the system output through a BlackHole Multi-Output
+    # Device while recording (so participants are captured), restoring it after.
+    # Requires SwitchAudioSource ('brew install switchaudio-osx').
+    auto_switch_output: bool = False
+    # Multi-Output Device (your speakers + BlackHole 2ch) used while recording.
+    multi_output_device_name: str = "Multi-Output Device"
+    # Optional Multi-Output Device (your AirPods + BlackHole 2ch); used instead
+    # when the current output looks like AirPods. Leave blank to disable.
+    multi_output_device_airpods: str = ""
+
     # Meeting detection.
     detect_apps: list[str] = field(default_factory=lambda: list(DEFAULT_DETECT_APPS))
     poll_interval_seconds: float = 5.0
@@ -110,6 +120,15 @@ ollama_host = "http://localhost:11434"
 
 # avfoundation Aggregate Device that mixes your mic + BlackHole (see README).
 audio_device_name = "Meetnote Aggregate"
+
+# Auto-route output through a BlackHole Multi-Output Device while recording so
+# participants are captured, then restore your previous output afterwards.
+# Requires SwitchAudioSource ('brew install switchaudio-osx').
+auto_switch_output = false
+multi_output_device_name = "Multi-Output Device"
+# If you wear AirPods, create an "AirPods + BlackHole 2ch" Multi-Output Device
+# and put its name here; meetnote uses it automatically when you're on AirPods.
+multi_output_device_airpods = ""
 
 # Apps whose presence triggers auto-recording (substring, case-insensitive).
 detect_apps = ["zoom.us", "Microsoft Teams", "Webex", "Slack", "FaceTime", "Discord"]

@@ -83,11 +83,25 @@ def check_whisper(config: Config) -> Check:
     return Check("faster-whisper", True, f"installed; model '{config.whisper_model}' (downloads on first use)")
 
 
+def check_audio_switch(config: Config) -> Check:
+    target = config.multi_output_device_name
+    if not shutil.which("SwitchAudioSource"):
+        return Check(
+            "auto output-switch",
+            False,
+            "enabled but SwitchAudioSource missing — 'brew install switchaudio-osx'",
+        )
+    return Check("auto output-switch", True, f"enabled; switches output to '{target}' while recording")
+
+
 def run_all_checks(config: Config) -> list[Check]:
-    return [
+    checks = [
         check_ffmpeg(),
         check_blackhole(),
         check_audio_device(config),
         check_whisper(config),
         check_ollama(config),
     ]
+    if config.auto_switch_output:
+        checks.append(check_audio_switch(config))
+    return checks

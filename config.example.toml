@@ -17,6 +17,15 @@ ollama_host = "http://localhost:11434"
 # avfoundation Aggregate Device that mixes your mic + BlackHole (see README).
 audio_device_name = "Meetnote Aggregate"
 
+# Auto-route output through a BlackHole Multi-Output Device while recording so
+# participants are captured, then restore your previous output afterwards.
+# Requires SwitchAudioSource ('brew install switchaudio-osx').
+auto_switch_output = false
+multi_output_device_name = "Multi-Output Device"
+# If you wear AirPods, create an "AirPods + BlackHole 2ch" Multi-Output Device
+# and put its name here; meetnote uses it automatically when you're on AirPods.
+multi_output_device_airpods = ""
+
 # Apps whose presence triggers auto-recording (substring, case-insensitive).
 detect_apps = ["zoom.us", "Microsoft Teams", "Webex", "Slack", "FaceTime", "Discord"]
 poll_interval_seconds = 5.0

@@ -18,8 +18,8 @@ if ! command -v brew >/dev/null 2>&1; then
   exit 1
 fi
 
-echo "==> Installing system dependencies (ffmpeg, ollama)"
-brew install ffmpeg ollama || true
+echo "==> Installing system dependencies (ffmpeg, ollama, switchaudio-osx)"
+brew install ffmpeg ollama switchaudio-osx || true
 
 echo "==> Installing BlackHole audio driver (cask)"
 # BlackHole is a cask (a system audio driver) and may prompt for your password.
